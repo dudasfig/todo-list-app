@@ -47,6 +47,13 @@ todo-list-app-app-1     node:18-alpine   "docker-entrypoint.s…"   app       24
 todo-list-app-mysql-1   mysql:8.0        "docker-entrypoint.s…"   mysql     24 seconds ago   Up 23 seconds   3306/tcp, 33060/tcp
 ```
 
+If you look at the Docker Desktop GUI, you can see the containers and dive deeper into their configuration.
+
+
+
+
+<img width="1330" alt="image" src="https://github.com/dockersamples/todo-list-app/assets/313480/d85a4bcf-e2c3-4917-9220-7d9b9a78dc54">
+
 
 ## Access the app
 
