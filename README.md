@@ -23,9 +23,6 @@ Navigate into the todo-list-app directory:
 docker compose up -d --build
 ```
 
-The to-do list app will be running at http://localhost:3000.
-
- 
 When you run this command, you should see an output like this:
 
 ```
@@ -39,5 +36,19 @@ When you run this command, you should see an output like this:
   ⠸ Volume "todo-list-app_todo-mysql-data"  Created         0.3s
   ✔ Container todo-list-app-app-1           Started         0.3s
   ✔ Container todo-list-app-mysql-1         Started         0.3s
+```
 
+## List the services
+
+```
+docker compose ps
+NAME                    IMAGE            COMMAND                  SERVICE   CREATED          STATUS          PORTS
+todo-list-app-app-1     node:18-alpine   "docker-entrypoint.s…"   app       24 seconds ago   Up 7 seconds    127.0.0.1:3000->3000/tcp
+todo-list-app-mysql-1   mysql:8.0        "docker-entrypoint.s…"   mysql     24 seconds ago   Up 23 seconds   3306/tcp, 33060/tcp
+```
+
+
+## Access the app
+
+The to-do list app will be running at [http://localhost:3000](http://localhost:3000).
 
