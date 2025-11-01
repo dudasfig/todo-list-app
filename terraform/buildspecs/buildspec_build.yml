@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO: 325583868777.dkr.ecr.eu-central-1.amazonaws.com/esf-vppm/todo-list
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 325583868777.dkr.ecr.eu-central-1.amazonaws.com
+      - IMAGE_TAG_LATEST=latest
+      - IMAGE_TAG_BUILD=build-${CODEBUILD_BUILD_NUMBER}
+      - echo Build number is $CODEBUILD_BUILD_NUMBER
+      - echo IMAGE_TAG_BUILD=$IMAGE_TAG_BUILD
+
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $IMAGE_REPO:$IMAGE_TAG_LATEST -t $IMAGE_REPO:$IMAGE_TAG_BUILD .
+
+  post_build:
+    commands:
+      - echo Pushing image to ECR...
+      - docker push $IMAGE_REPO:$IMAGE_TAG_LATEST
+      - docker push $IMAGE_REPO:$IMAGE_TAG_BUILD
+      - echo Build completed successfully.
+
+artifacts:
+  files:
+    - '**/*'

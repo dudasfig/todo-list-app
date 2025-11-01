@@ -1,0 +1,36 @@
+version: 0.2
+env:
+  variables:
+    IMAGE_REPO: 325583868777.dkr.ecr.eu-central-1.amazonaws.com/esf-vppm/todo-list
+    DEPLOYMENT_NAME: esf-vppm-eu-central-1-deployment-todo # <-- ajuste EXATAMENTE para o nome do seu deployment
+    CONTAINER_NAME: todo 
+
+phases: 
+  install:
+    commands:
+      - echo Instalando kubectl...
+      - curl -sLO "https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl"
+      - chmod +x kubectl && mv kubectl /usr/local/bin/
+
+  pre_build:
+    commands:
+      - echo "Configurando kubeconfig para $CLUSTER_NAME"
+      - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_DEFAULT_REGION
+
+      - echo "Obtendo tag da imagem baseada no build..."
+      - IMAGE_TAG="build-${CODEBUILD_BUILD_NUMBER}"
+      - IMAGE_URI="$IMAGE_REPO:$IMAGE_TAG"
+      - echo "IMAGE_URI=${IMAGE_URI}"
+
+  build:
+    commands:
+      - echo "Atualizando imagem no Kubernetes..."
+      - kubectl -n $NAMESPACE set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$IMAGE_URI
+
+      - echo "Aguardando rollout..."
+      - kubectl -n $NAMESPACE rollout status deployment/$DEPLOYMENT_NAME --timeout=120s
+
+
+artifacts:
+  files:
+    - '**/*'
